@@ -11,9 +11,7 @@
               values('".$current."','".$voltage."','".$data_power."','".$flow_rate."')";
     $result = mysqli_query($conn, $sql);
 
-    $flow_rate_warning = ($flow_rate < 476) ? "?flow_rate_warning=true" : "?flow_rate_warning=false";
-
     $_SESSION['redirect_url'] = $_SERVER['PHP_SELF']; 
-    header('Location: index.php'.$flow_rate_warning);
+    header('Location: index.php');
   }
 ?>

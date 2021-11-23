@@ -1,4 +1,5 @@
 $(document).ready(function () {
+  // checkPressureFlow();
   var flow_state = getCookie("flow_state");
 
   if (flow_state == null) {
@@ -7,7 +8,21 @@ $(document).ready(function () {
   } else {
       setToggleState(flow_state);
   }
+
+  
 });
+
+function checkPressureFlow() {
+  console.dir("in");
+  $.ajax({
+    url: 'get_gauges_data.php',
+    dataType: 'json'
+  }).done(function(jsonData) {
+    console.log(jsonData);
+  });
+
+  window.setTimeout(checkPressureFlow, 5000);
+}
 
 // Loads gauges for real time data
 google.charts.load('current', {
@@ -29,14 +44,26 @@ function drawGaugesChart() {
       if (jsonData.length == 1) {
           // Display no data
           $('#no_data').prop('hidden', false);
+          $('#green_led').prop('hidden', false);
+          $('#red_led').prop('hidden', true);
       } else {
           // Use respone from php for data table
+          var flow_rate = jsonData[4][1];
           var data = google.visualization.arrayToDataTable(jsonData);
           chart.draw(data, options);
 
           $('#no_data').prop('hidden', true);
+          
+          if (flow_rate < 476) {
+            $('#green_led').prop('hidden', true);
+            $('#red_led').prop('hidden', false);
+            $('#led_warning').prop('hidden', false);
+          } else {
+            $('#green_led').prop('hidden', false);
+            $('#red_led').prop('hidden', true);
+            $('#led_warning').prop('hidden', true);
+          }
       }
-      
 
       // Draw again in 5 seconds
       window.setTimeout(drawGaugesChart, 5000);

@@ -22,21 +22,6 @@
                 $statusMsg = '';
         }
     };
-
-    if(!empty($_GET['flow_rate_warning'])) {
-        switch($_GET['flow_rate_warning']) {
-            case 'true':
-                $statusType = 'alert-danger';
-                $statusMsg = 'Problem occured, please check pressure sensor.';
-                $ledSwitch = "red";
-                break;
-            case 'false':
-                $ledSwitch = "green";
-            default:
-                $statusType = '';
-                $statusMsg = '';
-        }
-    }
 ?>
 
 <!DOCTYPE html>
@@ -65,9 +50,14 @@
              
             <?php if(!empty($statusMsg)){ ?>
             <div class="col-xs-12">
-                <div class="alert <?php echo $statusType; ?>"><?php echo $statusMsg; ?></div>
+                <div class="alert <?php echo $statusType; ?> alert-dismissible" role="alert"><?php echo $statusMsg; ?></div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <?php } ?>
+
+            <div class="col-xs-12" id="led_warning">
+                <div class="alert alert-danger">Problem occured, please check pressure sensor.</div>
+            </div>
 
             <div class="card text-center">
                 <div class="card-header">
@@ -82,19 +72,14 @@
                         </ul>
                     </div>
                     <div class="float-end">
-                    <?php if(!empty($ledSwitch)){ ?>
-                            <?php if($ledSwitch == "green") { ?>
-                                <div class="led-box float">
-                                    <!-- <h5>Pressure Sensor</h5> -->
-                                    <div class="led-green"></div>
-                                </div>
-                            <?php } else if ($ledSwitch == "red") { ?>
-                                <div class="led-box">
-                                    <!-- <h5>Pressure Sensor</h5> -->
-                                    <div class="led-red"></div>
-                                </div>
-                            <?php } ?>
-                        <?php } ?>
+                        <div class="led-box" id="green_led">
+                            <!-- <h5>Pressure Sensor</h5> -->
+                            <div class="led-green"></div>
+                        </div>
+                        <div class="led-box" id="red_led" hidden>
+                            <!-- <h5>Pressure Sensor</h5> -->
+                            <div class="led-red"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
