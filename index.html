@@ -46,14 +46,13 @@
                     if (jsonData.length == 1) {
                         // Display no data
                         $('#no_data').prop('hidden', false);
-                    } else if (jsonData > 1) {
+                    } else {
                         // Use respone from php for data table
                         var data = google.visualization.arrayToDataTable(jsonData);
                         chart.draw(data, options);
 
                         $('#no_data').prop('hidden', true);
                     }
-                    
 
                     // Draw again in 5 seconds
                     window.setTimeout(drawGaugesChart, 5000);
