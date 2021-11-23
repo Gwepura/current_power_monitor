@@ -17,16 +17,21 @@
         <script>
             $(document).ready(function () {
                 var flow_state = getCookie("flow_state");
-                setToggleState(flow_state);
+
+                if (flow_state == null) {
+                    flow_state = "on";
+                    btnToggle(flow_state);
+                } else {
+                    setToggleState(flow_state);
+                }
             });
-            
+
             // Loads gauges for real time data
             google.charts.load('current', {
               packages: ['gauge']
             }).then(function () {
               var options = {
-                width: 400, height: 120,
-                minorTicks: 5
+                minorTicks: 5,
               };
 
               var chart = new google.visualization.Gauge(document.getElementById('gauges_chart'));
@@ -38,9 +43,17 @@
                     url: 'get_gauges_data.php',
                     dataType: 'json' 
                 }).done(function (jsonData) {
-                    // Use respone from php for data table
-                    var data = google.visualization.arrayToDataTable(jsonData);
-                    chart.draw(data, options);
+                    if (jsonData.length == 1) {
+                        // Display no data
+                        $('#no_data').prop('hidden', false);
+                    } else if (jsonData > 1) {
+                        // Use respone from php for data table
+                        var data = google.visualization.arrayToDataTable(jsonData);
+                        chart.draw(data, options);
+
+                        $('#no_data').prop('hidden', true);
+                    }
+                    
 
                     // Draw again in 5 seconds
                     window.setTimeout(drawGaugesChart, 5000);
@@ -53,8 +66,15 @@
                 packages: ['corechart']
                 }).then(function () {
                 var options = {
-                    title: 'Time vs Current(mA)',
-                    legend: { position: ['bottom']}
+                    title: 'Time vs Current (mA)',
+                    legend: { position: ['bottom']},
+                    hAxis: {
+                        textPosition: 'none',
+                        title: 'Time',
+                    },
+                    vAxis: {
+                        title: 'Current'
+                    }
                 };
 
                 var chart = new google.visualization.LineChart(document.getElementById('time_current_chart'));
@@ -66,8 +86,14 @@
                         url: 'get_time_current_data.php',
                         dataType: 'json'
                     }).done(function(jsonData) {
-                        var data = google.visualization.arrayToDataTable(jsonData);
-                        chart.draw(data, options);
+                        if (jsonData.length > 1) {
+                            var data = google.visualization.arrayToDataTable(jsonData);
+                            chart.draw(data, options);
+                            $('#time_current_chart').prop('hidden', false);
+                        } else {
+                            $('#time_current_chart').prop('hidden', true);
+                        }
+                        
 
                         // Draw again in 5 seconds
                         window.setTimeout(drawTimeCurrentLineChart, 5000);
@@ -80,8 +106,15 @@
                 packages: ['corechart']
                 }).then(function () {
                 var options = {
-                    title: 'Time vs Voltage(V)',
-                    legend: { position: ['bottom']}
+                    title: 'Time vs Voltage (V)',
+                    legend: { position: ['bottom']},
+                    hAxis: {
+                        textPosition: 'none',
+                        title: 'Time',
+                    },
+                    vAxis: {
+                        title: 'Voltage'
+                    }
                 };
 
                 var chart = new google.visualization.LineChart(document.getElementById('time_voltage_chart'));
@@ -93,8 +126,13 @@
                         url: 'get_time_voltage_data.php',
                         dataType: 'json'
                     }).done(function(jsonData) {
-                        var data = google.visualization.arrayToDataTable(jsonData);
-                        chart.draw(data, options);
+                        if (jsonData.length > 1) {
+                            var data = google.visualization.arrayToDataTable(jsonData);
+                            chart.draw(data, options);
+                            $('#time_voltage_chart').prop('hidden', false);
+                        } else {
+                            $('#time_voltage_chart').prop('hidden', true);
+                        }
 
                         // Draw again in 5 seconds
                         window.setTimeout(drawTimeVoltageLineChart, 5000);
@@ -107,8 +145,15 @@
                 packages: ['corechart']
                 }).then(function () {
                 var options = {
-                    title: 'Time vs Power(mW)',
-                    legend: { position: ['bottom']}
+                    title: 'Time vs Power (mW)',
+                    legend: { position: ['bottom']},
+                    hAxis: {
+                        textPosition: 'none',
+                        title: 'Time',
+                    },
+                    vAxis: {
+                        title: 'Power'
+                    }
                 };
 
                 var chart = new google.visualization.LineChart(document.getElementById('time_power_chart'));
@@ -120,8 +165,13 @@
                         url: 'get_time_power_data.php',
                         dataType: 'json'
                     }).done(function(jsonData) {
-                        var data = google.visualization.arrayToDataTable(jsonData);
-                        chart.draw(data, options);
+                        if (jsonData.length > 1) {
+                            var data = google.visualization.arrayToDataTable(jsonData);
+                            chart.draw(data, options);
+                            $('#time_power_chart').prop('hidden', false);
+                        } else {
+                            $('#time_power_chart').prop('hidden', true);
+                        }
 
                         // Draw again in 5 seconds
                         window.setTimeout(drawTimePowerLineChart, 5000);
@@ -135,7 +185,14 @@
                 }).then(function () {
                 var options = {
                     title: 'Time vs Flow Rate',
-                    legend: { position: ['bottom']}
+                    legend: { position: ['bottom']},
+                    hAxis: {
+                        textPosition: 'none',
+                        title: 'Time',
+                    },
+                    vAxis: {
+                        title: 'Flow Rate'
+                    }
                 };
 
                 var chart = new google.visualization.LineChart(document.getElementById('time_flow_rate_chart'));
@@ -147,8 +204,13 @@
                         url: 'get_time_flow_rate_data.php',
                         dataType: 'json'
                     }).done(function(jsonData) {
-                        var data = google.visualization.arrayToDataTable(jsonData);
-                        chart.draw(data, options);
+                        if (jsonData.length > 1) {
+                            var data = google.visualization.arrayToDataTable(jsonData);
+                            chart.draw(data, options);
+                            $('#time_flow_rate_chart').prop('hidden', false);
+                        } else {
+                            $('#time_flow_rate_chart').prop('hidden', true);
+                        }
 
                         // Draw again in 5 seconds
                         window.setTimeout(drawTimeFlowRateLineChart, 5000);
@@ -161,7 +223,13 @@
                 if(tab_name == "real_time") {
                     document.getElementById("real_time_page").hidden = false;
                     document.getElementById("historical_page").hidden = true;
+
+                    $("#btnHistorical").removeClass("active");
+                    $("#btnRealTime").addClass("active");
                 } else if (tab_name == "historical") {
+                    $("#btnRealTime").removeClass("active");
+                    $("#btnHistorical").addClass("active");
+
                     document.getElementById("real_time_page").hidden = true;
                     document.getElementById("historical_page").hidden = false;
                 }
@@ -216,49 +284,81 @@
         </script>
     </head>
     <body>
-        <div class="container-fluid">
+        <div class="container-fluid w-75 mx-auto" >
             <h1 class="text-center">Current Power Monitor</h1>
-
-            <div class="card">
+             
+            <div class="card text-center">
                 <div class="card-header">
                     <div class="float-start">
-                        <ul class="pagination">
-                            <li class="page-item">
-                                <button class="page-link" onclick="changeTab('real_time')"> Real Time</button>
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <li class="nav-item">
+                                <button class="nav-link active" aria-current="true" id="btnRealTime" onclick="changeTab('real_time')"> Real Time</button>
                             </li>
-                            <li class="page-item">
-                                <button class="page-link" onclick="changeTab('historical')"> Historical</button>
+                            <li class="nav-item">
+                                <button class="nav-link" id="btnHistorical" onclick="changeTab('historical')"> Historical</button>
                             </li>
                         </ul>
                     </div>
-
-                    <div class="float-end" id="export_to_csv">
-                        <a href="export_to_csv.php" class="btn btn-primary">Export to CSV</a>
-                    </div>
                 </div>
                 <div class="card-body">
-                    <h3>Flow Control Switch</h3>
-                    <div class="btn-group" role="group" aria-label="Control Switch">
-                        <input type="raido" class="btn-check" name="btnSwitch" id="btnOnSwitch" value="on" onclick="btnToggle('on')" autocomplete="off" checked>
-                        <label class="btn btn-outline-primary" id="btnOnSwitchLabel" for="btnOnSwitch">On</label>
-
-                        <input type="raido" class="btn-check" name="btnSwitch" id="btnOffSwitch" value="off" onclick="btnToggle('off')" autocomplete="off">
-                        <label class="btn btn-outline-primary" id="btnOffSwitchLabel" for="btnOffSwitch">Off</label>
+                    <div class="float-end" id="export_to_csv">
+                        <a href="export_to_csv.php" class="btn btn-primary">Export to CSV</a>
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#clearDataModal">
+                            Clear Data
+                        </button>
                     </div>
 
+                    <div class="float-start">
+                        <h5>Flow Control Switch</h5>
+                        <div class="btn-group" role="group" aria-label="Control Switch">
+                            <input type="raido" class="btn-check" name="btnSwitch" id="btnOnSwitch" value="on" onclick="btnToggle('on')" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary" id="btnOnSwitchLabel" for="btnOnSwitch">On</label>
+
+                            <input type="raido" class="btn-check" name="btnSwitch" id="btnOffSwitch" value="off" onclick="btnToggle('off')" autocomplete="off">
+                            <label class="btn btn-outline-primary" id="btnOffSwitchLabel" for="btnOffSwitch">Off</label>
+                        </div>
+                    </div>
+                
+                    <br>
+                    <br>
+                    <br>
                     <br>
                     <br>
 
-                    <div id="real_time_page">
-                        <h3 class="text-center">Real Time Data</h3>
-                        <div id="gauges_chart" style="width: 400px; height: 120px"></div>
+                    <div id="real_time_page" >
+                        <h2 class="text-center">Real Time Data</h2>
+                        <br>
+                        <br>
+                        <div id="gauges_chart" style="width:50%;margin-left: auto;margin-right: auto;"></div>
                     </div>
                     <div id="historical_page" hidden="hidden">
-                        <h3 class="text-center">Historical Data</h3>
-                        <div id="time_current_chart" style="width: 900px; height: 500px"></div>
-                        <div id="time_voltage_chart" style="width: 900px; height: 500px"></div>
-                        <div id="time_power_chart" style="width: 900px; height: 500px"></div>
-                        <div id="time_flow_rate_chart" style="width: 900px; height: 500px"></div>
+                        <h2 class="text-center">Historical Data</h2>
+                        <br>
+                        <br>
+                        <div id="time_current_chart" style="width: 900px; height: 500px; margin-right: auto; margin-left: auto;"></div>
+                        <div id="time_voltage_chart" style="width: 900px; height: 500px; margin-right: auto; margin-left: auto;"></div>
+                        <div id="time_power_chart" style="width: 900px; height: 500px; margin-right: auto; margin-left: auto;"></div>
+                        <div id="time_flow_rate_chart" style="width: 900px; height: 500px; margin-right: auto; margin-left: auto;"></div>
+                    </div>
+
+                    <h3 class="text-center" id="no_data" hidden>No data available...</h3>
+                </div>
+            </div>
+
+            <div class="modal fade" tabindex="-1" id="clearDataModal" aria-labelledby="clearModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="clearModalLabel">Clear Data?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to continue? Changes made will be irreversible.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <a href="delete_data.php" class="btn btn-danger">Clear Data</a>
+                        </div>
                     </div>
                 </div>
             </div>
