@@ -3,7 +3,7 @@
    include_once 'db_config.php';
   
   // Gets data from database
-  $gauges_sql = "SELECT * FROM data_readings ORDER BY data_timestamp ASC LIMIT 1";
+  $gauges_sql = "SELECT * FROM data_readings ORDER BY data_timestamp DESC LIMIT 1";
   $gauges_result = mysqli_query($conn, $gauges_sql);  
 
   // Create data arrays
