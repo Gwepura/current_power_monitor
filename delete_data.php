@@ -7,7 +7,7 @@
   $result = mysqli_query($conn, $sql);
 
   $_SESSION['redirect_url'] = $_SERVER['PHP_SELF']; 
-  header('Location: index.html');
+  header('Location: index.php');
 
   exit;
 ?>

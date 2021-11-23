@@ -3,12 +3,14 @@
    include_once 'db_config.php';
   
   // Gets data from database
-  $gauges_sql = "SELECT * FROM data_readings ORDER BY ID DESC LIMIT 1";
+  $gauges_sql = "SELECT * FROM data_readings ORDER BY data_timestamp ASC LIMIT 1";
   $gauges_result = mysqli_query($conn, $gauges_sql);  
 
   // Create data arrays
   $gauges_data = [];
   $gauges_data[] = ["Label", "Value"];
+
+  
 
   // Output data of each row
   while($row = mysqli_fetch_assoc($gauges_result)) {
@@ -17,6 +19,12 @@
     $gauges_data[] = ["Power", (float) $row["data_power"]];
     $gauges_data[] = ["Flow Rate", (float) $row["flow_rate"]];
   }
+
+  // function get_last_row($conn) {
+    
+
+    // return $gauges_result;
+  // }
 
   mysqli_close($conn);
 
