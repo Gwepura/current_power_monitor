@@ -1,6 +1,7 @@
 <?php 
    // Load database configuration file
    include_once 'db_config.php';
+  //  session_start();
   
   // Gets data from database
   $gauges_sql = "SELECT * FROM data_readings ORDER BY data_timestamp DESC LIMIT 1";

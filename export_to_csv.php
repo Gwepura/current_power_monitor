@@ -6,7 +6,7 @@
   $query = $conn->query("SELECT * FROM data_readings ORDER BY id ASC");
   if($query->num_rows > 0) {
     $delimiter = ",";
-    $filename = "current_power_monitor " . date('Y-m-d') . ".csv";
+    $filename = "energy_monitoring_system (" . date('Y-m-d') . ").csv";
 
     // Create a file pointer
     $f = fopen('php://memory', 'w');

@@ -1,6 +1,7 @@
 <?php
     // Load the database configuration file
     include_once "db_config.php";
+    // include_once "get_gauges_data.php";
 
     // Get status message
     if(!empty($_GET['status'])){
@@ -22,6 +23,8 @@
                 $statusMsg = '';
         }
     };
+
+    // $data_power = get_last_row($conn);
 ?>
 
 <!DOCTYPE html>
@@ -39,13 +42,18 @@
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.0/jquery.min.js"></script>
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.0/jquery.min.js"></script> -->
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+        <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
 
         <link rel="stylesheet" href="styles.css">
         <script src="script.js"></script>
     </head>
     <body>
         <div class="container-fluid w-75 mx-auto" >
+            <br>
             <h1 class="text-center">Energy Monitoring System</h1>
              
             <?php if(!empty($statusMsg)){ ?>
@@ -55,7 +63,7 @@
             </div>
             <?php } ?>
 
-            <div class="col-xs-12" id="led_warning">
+            <div class="col-xs-12" id="led_warning" hidden>
                 <div class="alert alert-danger">Problem occured, please check pressure sensor.</div>
             </div>
 
@@ -68,6 +76,9 @@
                             </li>
                             <li class="nav-item">
                                 <button class="nav-link" id="btnHistorical" onclick="changeTab('historical')"> Historical</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" id="btnLCDDisplay" onclick="changeTab('lcd')"> LCD Display</button>
                             </li>
                         </ul>
                     </div>
@@ -126,13 +137,30 @@
                         <h2 class="text-center">Historical Data</h2>
                         <br>
                         <br>
-                        <div id="time_current_chart" style="width: 900px; height: 500px; margin-right: auto; margin-left: auto;"></div>
-                        <div id="time_voltage_chart" style="width: 900px; height: 500px; margin-right: auto; margin-left: auto;"></div>
-                        <div id="time_power_chart" style="width: 900px; height: 500px; margin-right: auto; margin-left: auto;"></div>
-                        <div id="time_flow_rate_chart" style="width: 900px; height: 500px; margin-right: auto; margin-left: auto;"></div>
+                        <div id="time_current_chart" style="width: 70%; height: auto; margin-right: auto; margin-left: auto;"></div>
+                        <div id="time_voltage_chart" style="width: 70%; height: auto; margin-right: auto; margin-left: auto;"></div>
+                        <div id="time_power_chart" style="width: 70%; height: auto; margin-right: auto; margin-left: auto;"></div>
+                        <div id="time_flow_rate_chart" style="width: 70%; height: auto; margin-right: auto; margin-left: auto;"></div>
                     </div>
+                    <div id="lcd_display_page" hidden>
+                        <h2 class="text-center">Power LCD Display</h2>
+                        <br>
+                        <br>
 
+                        <div class="col-md-12 mt-5 d-flex justify-content-center">
+                            <div class="d-flex justify-content-between align-items-center breaking-news bg-white">
+                                <div class="d-flex flex-row flex-grow-1 flex-fill justify-content-center bg-danger py-2 text-white px-1 news"><span class="d-flex align-items-center"> &nbsp;Power Meter</div>
+                                <marquee class="news-scroll" behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();"> 
+                                    <p id="power_display" style="font-family: 'Orbitron', sans-serif;"></p>
+                                </marquee>
+                            </div>
+                        </div>
+                    </div>
                     <h3 class="text-center" id="no_data" hidden>No data available...</h3>
+
+                    <br>
+                    <br>
+                    <br>
                 </div>
             </div>
 
@@ -181,6 +209,10 @@
                     </div>
                 </div>
             </div>
+            <br>
+            <br>
+            <br>
+            <br>
         </div>
     </body>
 </html>

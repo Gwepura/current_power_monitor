@@ -1,5 +1,4 @@
-$(document).ready(function () {
-  // checkPressureFlow();
+$( document ).ready(function () {
   var flow_state = getCookie("flow_state");
 
   if (flow_state == null) {
@@ -8,21 +7,7 @@ $(document).ready(function () {
   } else {
       setToggleState(flow_state);
   }
-
-  
 });
-
-function checkPressureFlow() {
-  console.dir("in");
-  $.ajax({
-    url: 'get_gauges_data.php',
-    dataType: 'json'
-  }).done(function(jsonData) {
-    console.log(jsonData);
-  });
-
-  window.setTimeout(checkPressureFlow, 5000);
-}
 
 // Loads gauges for real time data
 google.charts.load('current', {
@@ -49,8 +34,11 @@ function drawGaugesChart() {
       } else {
           // Use respone from php for data table
           var flow_rate = jsonData[4][1];
+          var power = jsonData[3][1] + " mW";
           var data = google.visualization.arrayToDataTable(jsonData);
           chart.draw(data, options);
+
+          $("#power_display").text(power);
 
           $('#no_data').prop('hidden', true);
           
@@ -77,14 +65,7 @@ google.charts.load('current', {
   }).then(function () {
   var options = {
       title: 'Time vs Current (mA)',
-      legend: { position: ['bottom']},
-      hAxis: {
-          textPosition: 'none',
-          title: 'Time',
-      },
-      vAxis: {
-          title: 'Current'
-      }
+    //   legend: { position: ['bottom']},
   };
 
   var chart = new google.visualization.LineChart(document.getElementById('time_current_chart'));
@@ -118,13 +99,6 @@ google.charts.load('current', {
   var options = {
       title: 'Time vs Voltage (V)',
       legend: { position: ['bottom']},
-      hAxis: {
-          textPosition: 'none',
-          title: 'Time',
-      },
-      vAxis: {
-          title: 'Voltage'
-      }
   };
 
   var chart = new google.visualization.LineChart(document.getElementById('time_voltage_chart'));
@@ -157,13 +131,6 @@ google.charts.load('current', {
   var options = {
       title: 'Time vs Power (mW)',
       legend: { position: ['bottom']},
-      hAxis: {
-          textPosition: 'none',
-          title: 'Time',
-      },
-      vAxis: {
-          title: 'Power'
-      }
   };
 
   var chart = new google.visualization.LineChart(document.getElementById('time_power_chart'));
@@ -196,13 +163,6 @@ google.charts.load('current', {
   var options = {
       title: 'Time vs Flow Rate',
       legend: { position: ['bottom']},
-      hAxis: {
-          textPosition: 'none',
-          title: 'Time',
-      },
-      vAxis: {
-          title: 'Flow Rate'
-      }
   };
 
   var chart = new google.visualization.LineChart(document.getElementById('time_flow_rate_chart'));
@@ -230,18 +190,35 @@ google.charts.load('current', {
 
 // Switches between real time data tab and historical data tab
 function changeTab(tab_name) { 
-  if(tab_name == "real_time") {
+  switch(tab_name) {
+    case 'real_time':
       document.getElementById("real_time_page").hidden = false;
       document.getElementById("historical_page").hidden = true;
+      document.getElementById("lcd_display_page").hidden = true;
 
       $("#btnHistorical").removeClass("active");
       $("#btnRealTime").addClass("active");
-  } else if (tab_name == "historical") {
+      $("#btnLCDDisplay").removeClass("active");
+      break;
+    case 'historical':
       $("#btnRealTime").removeClass("active");
       $("#btnHistorical").addClass("active");
+      $("#btnLCDDisplay").removeClass("active");
 
       document.getElementById("real_time_page").hidden = true;
       document.getElementById("historical_page").hidden = false;
+      document.getElementById("lcd_display_page").hidden = true;
+      break;
+    case 'lcd':
+      $("#btnRealTime").removeClass("active");
+      $("#btnHistorical").removeClass("active");
+      $("#btnLCDDisplay").addClass("active");
+
+      document.getElementById("real_time_page").hidden = true;
+      document.getElementById("historical_page").hidden = true;
+      document.getElementById("lcd_display_page").hidden = false;
+    default:
+      break;
   }
 }
 
